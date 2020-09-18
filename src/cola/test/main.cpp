@@ -1,12 +1,12 @@
+#include <cassert>
+#include <cmath>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <cmath>
-#include <cassert>
-#include <sstream>
 
-#include "utility.hpp"
 #include "cola.hpp"
+#include "utility.hpp"
 
 void test_flag();
 void test_args();
@@ -15,7 +15,6 @@ void test_vector_initialize();
 void test_rest_arg();
 void test_undefined_options();
 void usage_example(int, char*[]);
-
 
 int main(int argc, char* argv[])
 {
@@ -31,5 +30,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
-

@@ -1,27 +1,25 @@
-#include "utility.hpp"
 #include "cola.hpp"
+#include "utility.hpp"
 
 void test_flag()
 {
     cola::parser parser;
     parser.define("a", "A for ant").alias("apple");
     parser.define('b', "B for bat").alias("ball");
-    parser.define("c", "C for cat").alias("cat"); 
-    
+    parser.define("c", "C for cat").alias("cat");
+
     {
         // pass short option.
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a"
-        };
+        const char* argv[] = {"./run", "-a"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
 
         // "a", 'a', "apple" is the same.
-        assert( parser.is_passed('a'));
-        assert( parser.is_passed("a"));
-        assert( parser.is_passed("apple"));
+        assert(parser.is_passed('a'));
+        assert(parser.is_passed("a"));
+        assert(parser.is_passed("apple"));
         assert(!parser.is_passed('b'));
         assert(!parser.is_passed("cat"));
     }
@@ -29,9 +27,7 @@ void test_flag()
     {
         // pass options.
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a", "--cat", "-b"
-        };
+        const char* argv[] = {"./run", "-a", "--cat", "-b"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -45,7 +41,7 @@ void test_flag()
         // short options can be summarized.
         parser.reset();
         const char* argv[] = {
-            "./run", "-abc" // == -a -b -c
+          "./run", "-abc" // == -a -b -c
         };
         int argc = sizeof(argv) / sizeof(argv[0]);
 
@@ -59,27 +55,23 @@ void test_flag()
     success("[[[ test_flag() PASSED ]]]");
 }
 
-
-
 void test_args()
 {
     cola::parser parser;
     parser.define("a", "A for ant").alias("apple").with_arg<int>(42);
-    parser.define('b', "B for bat").alias("ball") .with_arg<double>(3.14);
-    parser.define("c", "C for cat").alias("cat")  .with_arg<std::string>("hello");
-    
+    parser.define('b', "B for bat").alias("ball").with_arg<double>(3.14);
+    parser.define("c", "C for cat").alias("cat").with_arg<std::string>("hello");
+
     {
         // default value of option -a is 42, -b is 3.14, -c is "hello".
         parser.reset();
-        const char* argv[] = {
-            "./run"
-        };
+        const char* argv[] = {"./run"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
 
         assert(!parser.is_passed("a"));
-        assert(parser.get<int>("a")  == 42);
+        assert(parser.get<int>("a") == 42);
         assert(std::fabs(parser.get<double>('b') - 3.14) < 1e-5);
         assert(parser.get<std::string>("cat") == "hello");
     }
@@ -87,9 +79,7 @@ void test_args()
     {
         // passed value of short option -a is 123.
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a", "123"
-        };
+        const char* argv[] = {"./run", "-a", "123"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -100,9 +90,7 @@ void test_args()
     {
         // another way to pass argument to short option.
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a123"
-        };
+        const char* argv[] = {"./run", "-a123"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -113,9 +101,7 @@ void test_args()
     {
         // passed value of long option --ball is 2.17.
         parser.reset();
-        const char* argv[] = {
-            "./run", "--ball", "2.17"
-        };
+        const char* argv[] = {"./run", "--ball", "2.17"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -126,9 +112,7 @@ void test_args()
     {
         // another way to pass argument to long option.
         parser.reset();
-        const char* argv[] = {
-            "./run", "--apple=123"
-        };
+        const char* argv[] = {"./run", "--apple=123"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -139,21 +123,20 @@ void test_args()
     std::cout << "\033[34m[[[ test_args() PASSED ]]]\033[m" << std::endl;
 }
 
-
-
 void test_vector_args()
 {
     cola::parser parser;
     parser.define("a", "A for ant").alias("apple").with_arg_vector<int>();
-    parser.define('b', "B for bat").alias("ball") .with_arg_vector<double>();
-    parser.define("c", "C for cat").alias("cat")  .with_arg_vector<std::string>().delimiter(':');
-    
+    parser.define('b', "B for bat").alias("ball").with_arg_vector<double>();
+    parser.define("c", "C for cat")
+      .alias("cat")
+      .with_arg_vector<std::string>()
+      .delimiter(':');
+
     {
         // ',' is used to separate array element in default.
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a", "1,2,3"
-        };
+        const char* argv[] = {"./run", "-a", "1,2,3"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -167,9 +150,7 @@ void test_vector_args()
     {
         // another way to pass argument to short option.
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a1,2,3"
-        };
+        const char* argv[] = {"./run", "-a1,2,3"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -183,9 +164,7 @@ void test_vector_args()
     {
         // pass argument to long option.
         parser.reset();
-        const char* argv[] = {
-            "./run", "--apple=1,2,3"
-        };
+        const char* argv[] = {"./run", "--apple=1,2,3"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -199,9 +178,7 @@ void test_vector_args()
     {
         // parser::option::delimiter(char) is used to change delimiter.
         parser.reset();
-        const char* argv[] = {
-            "./run", "--cat", "/bin:/usr/local/bin:/opt/bin"
-        };
+        const char* argv[] = {"./run", "--cat", "/bin:/usr/local/bin:/opt/bin"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -215,8 +192,6 @@ void test_vector_args()
     std::cout << "\033[34m[[[ test_vector_args() PASSED ]]]\033[m" << std::endl;
 }
 
-
-
 void test_vector_initialize()
 {
     cola::parser parser;
@@ -227,11 +202,15 @@ void test_vector_initialize()
     default_ivec[2] = 3;
 
     parser.define("a", "A for ant").with_arg_vector<int>(default_ivec);
-    parser.define("b", "B for bat").delimiter('x').with_arg_vector<int>("1x2x3");
-    parser.define("c", "C for cat").delimiter('/').with_arg_vector<std::string>("/usr/local/bin");
+    parser.define("b", "B for bat")
+      .delimiter('x')
+      .with_arg_vector<int>("1x2x3");
+    parser.define("c", "C for cat")
+      .delimiter('/')
+      .with_arg_vector<std::string>("/usr/local/bin");
 
     const char* argv[] = {
-        "./run",
+      "./run",
     };
     int argc = sizeof(argv) / sizeof(argv[0]);
 
@@ -244,10 +223,9 @@ void test_vector_initialize()
     assert(parser.get_vector<std::string>("c")[1] == "local");
     assert(parser.get_vector<std::string>("c")[2] == "bin");
 
-    std::cout << "\033[34m[[[ test_vector_initialize() PASSED ]]]\033[m" << std::endl;
+    std::cout << "\033[34m[[[ test_vector_initialize() PASSED ]]]\033[m"
+              << std::endl;
 }
-
-
 
 void test_rest_arg()
 {
@@ -257,9 +235,8 @@ void test_rest_arg()
     parser.define("b", "B for bat");
     parser.define("c", "C for cat");
 
-    const char* argv[] = {
-        "./run", "-a", "-b", "--abc", "-d", "-c", "target.dat", "with-dash-arg"
-    };
+    const char* argv[] = {"./run", "-a", "-b",         "--abc",
+                          "-d",    "-c", "target.dat", "with-dash-arg"};
     int argc = sizeof(argv) / sizeof(argv[0]);
 
     parser.parse(argc, argv);
@@ -272,7 +249,6 @@ void test_rest_arg()
     std::cout << "\033[34m[[[ test_rest_arg() PASSED ]]]\033[m" << std::endl;
 }
 
-
 void test_undefined_options()
 {
     cola::parser parser;
@@ -283,9 +259,7 @@ void test_undefined_options()
 
     {
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a", "-b", "-c"
-        };
+        const char* argv[] = {"./run", "-a", "-b", "-c"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -295,9 +269,7 @@ void test_undefined_options()
 
     {
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a", "-b", "-c", "-d"
-        };
+        const char* argv[] = {"./run", "-a", "-b", "-c", "-d"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -307,9 +279,7 @@ void test_undefined_options()
 
     {
         parser.reset();
-        const char* argv[] = {
-            "./run", "-a", "-b", "-c", "--undefined"
-        };
+        const char* argv[] = {"./run", "-a", "-b", "-c", "--undefined"};
         int argc = sizeof(argv) / sizeof(argv[0]);
 
         parser.parse(argc, argv);
@@ -317,51 +287,50 @@ void test_undefined_options()
         assert(parser.exists_undefined_options());
     }
 
-    std::cout << "\033[34m[[[ test_undefined_options() PASSED ]]]\033[m" << std::endl;
+    std::cout << "\033[34m[[[ test_undefined_options() PASSED ]]]\033[m"
+              << std::endl;
 }
-
 
 void usage_example(int argc, char* argv[])
 {
     cola::parser parser;
 
     parser.define("output", "output file")
-          .alias('o')
-          .with_arg<std::string>("output.dat");
+      .alias('o')
+      .with_arg<std::string>("output.dat");
 
     parser.define("test-cases", "test cases to run")
-          .alias('t')
-          .with_arg_vector<int>("1, 2, 3");
+      .alias('t')
+      .with_arg_vector<int>("1, 2, 3");
 
     parser.define("optimize-level", "optimization level")
-          .alias('O')
-          .with_arg<int>(0);
+      .alias('O')
+      .with_arg<int>(0);
 
-    parser.define("debug-level", "debug level")
-          .alias('d')
-          .with_arg<int>(0);
+    parser.define("debug-level", "debug level").alias('d').with_arg<int>(0);
 
     parser.define("dry-run", "enable dry run mode");
 
-    parser.define("version", "print version and exit")
-          .alias('v')
-          .alias('V');
+    parser.define("version", "print version and exit").alias('v').alias('V');
 
-    parser.define("help", "print this text and exit")
-          .alias('h');
+    parser.define("help", "print this text and exit").alias('h');
 
-    parser.define("hidden", "this is hidden option")
-          .hidden();
+    parser.define("hidden", "this is hidden option").hidden();
 
     parser.parse(argc, argv);
 
-    if(parser.is_passed("hidden")) {
+    if (parser.is_passed("hidden"))
+    {
         std::cout << "+++++++++++++++++++\n"
                      "--hidden is passed!\n"
-                     "+++++++++++++++++++\n" << std::endl;
+                     "+++++++++++++++++++\n"
+                  << std::endl;
     }
 
-    std::cerr << "== USAGE EXAMPLE =================================================================\n";
+    std::cerr
+      << "== USAGE EXAMPLE "
+         "=================================================================\n";
     parser.easy_usage("test program for cola.", std::cerr);
-    std::cerr << "==================================================================================\n";
+    std::cerr << "============================================================="
+                 "=====================\n";
 }

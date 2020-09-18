@@ -1,28 +1,30 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
+#include <cassert>
+#include <cmath>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <cmath>
-#include <cassert>
-#include <sstream>
 
-template<typename T> 
+template <typename T>
 inline std::string to_string(const T& value)
 {
     std::stringstream ss;
-    ss << value; 
+    ss << value;
     return ss.str();
 }
 
-template<typename T> 
+template <typename T>
 inline std::string to_string(const std::vector<T>& value)
 {
     std::stringstream ss;
     ss << "[";
-    for(typename std::vector<T>::const_iterator it = value.begin(); it != value.end(); ++it) {
-        ss << *it << ((it == value.end()-1)? "" : ", ");
+    for (typename std::vector<T>::const_iterator it = value.begin();
+         it != value.end(); ++it)
+    {
+        ss << *it << ((it == value.end() - 1) ? "" : ", ");
     }
     ss << "]";
     return ss.str();
