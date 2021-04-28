@@ -44,7 +44,7 @@ You can use `sample-circuit.txt` as a sample of a circuit file.
 ./relinCompObj.out [circuit-file-name]
 ```
 
-By default, the parameters kr and km are set as the embedded values in the source code.
+By default, the parameters `kr` and `km` are set as the embedded values in the source code.
 But when you specify them by command-line arguments, these values are used.
 
 ```
@@ -62,7 +62,7 @@ To see more details about each example and its options, execute each binary with
 
 # License
 ```
-Copyright 2018 Yamana Laboratory, Waseda University
+Copyright 2018-2021 Yamana Laboratory, Waseda University
 Supported by JST CREST Grant Number JPMJCR1503, Japan.
 
 Licensed under the Apache License, Version 2.0 (the "License");
